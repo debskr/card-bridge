@@ -2,7 +2,7 @@
 * text=auto
 # Unity files
 *.anim -text merge=unityyamlmerge diff
-*.asset -text merge=unityyamlmerge diff
+*.asset filter=lfs diff=lfs merge=lfs -text
 *.brush -text merge=unityyamlmerge diff
 *.controller -text merge=unityyamlmerge diff
 *.flare -text merge=unityyamlmerge diff
