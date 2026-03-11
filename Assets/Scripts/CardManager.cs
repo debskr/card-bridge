@@ -1,5 +1,6 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Collections;
 using UnityEngine;
 
@@ -19,6 +20,7 @@ public class CardManager : MonoBehaviour
 
     void Start()
     {
+        InitializePlayers();
         GenerateDeckCards();
         ShuffleDeck();
         DealCards();
@@ -60,7 +62,16 @@ public class CardManager : MonoBehaviour
         }
         
     }
-
+    public void InitializePlayers()
+    {
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i] != null)
+            {
+                players[i].SetupPlayer(i);
+            }
+        }
+    }
     public void DealCards()
     {
         //loop through all 52 cards
@@ -69,8 +80,17 @@ public class CardManager : MonoBehaviour
             //loop through player index from 4 players
             int playerIndex = i % 4;
             players[playerIndex].playerId = playerIndex;//assigning playerID
-            players[playerIndex].hand.Add(cardDeck[i]);//assigning 13 cards to each player 52/4
-        }    
+            //players[playerIndex].hand.Add(cardDeck[i]);//assigning 13 cards to each player 52/4
+            players[playerIndex].ReceiveCard(cardDeck[i]);
+        }
+        
+        for (int i = 0;i < players.Length; i++)
+        {
+            if(players[i] != null)
+            {
+                players[i].UpdateHandUI();
+            }
+        }
     }    
 
     public Sprite GetSpriteForCard(Suit suit, int rankIndex)
