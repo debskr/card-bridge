@@ -20,10 +20,10 @@ public class CardManager : MonoBehaviour
 
     void Start()
     {
-        InitializePlayers();
-        GenerateDeckCards();
-        ShuffleDeck();
-        DealCards();
+        //InitializePlayers();
+        //GenerateDeckCards();
+        //ShuffleDeck();
+        //DealCards();
     }
 
     public void GenerateDeckCards()
