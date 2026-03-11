@@ -1,10 +1,12 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 
 public class CardManager : MonoBehaviour
 {
     public List<Card> cardDeck = new List<Card>(); //for storing all 52 cards
+    public Player[] players = new Player[4];
     
     [System.Serializable]
     public class SuitSprites
@@ -18,6 +20,8 @@ public class CardManager : MonoBehaviour
     void Start()
     {
         GenerateDeckCards();
+        ShuffleDeck();
+        DealCards();
     }
 
     public void GenerateDeckCards()
@@ -40,8 +44,34 @@ public class CardManager : MonoBehaviour
             }
         }
 
-        Debug.Log(cardDeck.Count);
+        //Debug.Log(cardDeck.Count);
     }
+
+    //Shuffle all 52 cards
+    public void ShuffleDeck()
+    {
+        for (int i = 0; i < cardDeck.Count; i++)
+        {
+            int randomIndex = Random.Range(0, cardDeck.Count);
+
+            Card tempCard = cardDeck[i];
+            cardDeck[i] = cardDeck[randomIndex];
+            cardDeck[randomIndex] = tempCard;
+        }
+        
+    }
+
+    public void DealCards()
+    {
+        //loop through all 52 cards
+        for (int i = 0; i < cardDeck.Count; i++)
+        {
+            //loop through player index from 4 players
+            int playerIndex = i % 4;
+            players[playerIndex].playerId = playerIndex;//assigning playerID
+            players[playerIndex].hand.Add(cardDeck[i]);//assigning 13 cards to each player 52/4
+        }    
+    }    
 
     public Sprite GetSpriteForCard(Suit suit, int rankIndex)
     {
