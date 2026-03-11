@@ -9,7 +9,10 @@ public class GameManager : MonoBehaviour
     public List<Card> cardsOnTable = new List<Card>();
 
     public CardManager cardManager;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    public GameObject biddingUIPanel;
+    private int playerBidSelection;
+
     void Start()
     {
         currentLead = 0;
@@ -28,6 +31,22 @@ public class GameManager : MonoBehaviour
             cardManager.GenerateDeckCards();
             cardManager.ShuffleDeck();
             cardManager.DealCards();
-        }    
+        }
+        
+        biddingUIPanel.SetActive(true);
+    }
+
+    //Setting players bid amount from the UI
+    public void SetBidAmount(int amount)
+    {
+        playerBidSelection = amount;
+    }
+
+    //Sending Bid amount to Set in players Bid value and UI
+    public void ConfirmPlayerBid()
+    {
+        cardManager.players[0].SetPlayerBid(playerBidSelection);
+
+        biddingUIPanel.SetActive(false);
     }
 }

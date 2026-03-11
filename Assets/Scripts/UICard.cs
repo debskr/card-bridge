@@ -4,15 +4,16 @@ using UnityEngine.UI;
 public class UICard : MonoBehaviour
 {
     private Card myCardData;
-    private Image cardImage;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    //private Image cardImage;
+
     public void SetupCardData(Card assignedCard)
     {
         myCardData = assignedCard;
 
-        // Safe check so it doesn't crash if an Image isn't attached
+        // Check if myCardData in not null
         if (myCardData != null)
         {
+            //Setting sprite data to this card instance directly
             this.gameObject.GetComponent<Image>().sprite = myCardData.cardSprite;
         }
     }
