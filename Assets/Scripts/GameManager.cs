@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -31,6 +32,7 @@ public class GameManager : MonoBehaviour
             cardManager.GenerateDeckCards();
             cardManager.ShuffleDeck();
             cardManager.DealCards();
+            //AIPlayersCardCalculate();
         }
         
         biddingUIPanel.SetActive(true);
@@ -45,8 +47,28 @@ public class GameManager : MonoBehaviour
     //Sending Bid amount to Set in players Bid value and UI
     public void ConfirmPlayerBid()
     {
-        cardManager.players[0].SetPlayerBid(playerBidSelection);
+        cardManager.players[0].SetBid(playerBidSelection);
 
         biddingUIPanel.SetActive(false);
+
+        StartCoroutine(CalculateAIBidding());
+    }
+
+    //public void AIPlayersCardCalculate()
+    //{
+    //    for (int i = 1; i < cardManager.players.Length; i++)
+    //    {
+    //        cardManager.players[i].CalculateCards();
+    //    }
+    //}
+
+    IEnumerator CalculateAIBidding()
+    {
+        for (int i = 1; i < cardManager.players.Length; i++)
+        {
+            yield return new WaitForSeconds(Random.Range(0.5f, 1.5f));
+            
+            cardManager.players[i].CalculateAndSetAIBid();
+        }
     }
 }

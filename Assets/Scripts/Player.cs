@@ -43,12 +43,51 @@ public class Player : MonoBehaviour
         }
     }
 
+    //public void CalculateCards()
+    //{
+    //    for (int i = 0; i < hand.Count; i++)
+    //    {
+    //        Card card = hand[i];
+
+    //        if (card.suit == Suit.Spades)
+    //        {
+    //            Debug.Log("Found Spade of Player :"+ this.playerId);
+    //        }
+    //    }
+    //}
+
+    public void CalculateAndSetAIBid()
+    {
+        int estimatedBid = 0;
+
+        for (int i = 0; i < hand.Count; i++)
+        {
+            Card card = hand[i];
+
+            if (card.suit == Suit.Spades)
+            {
+                estimatedBid++;
+            }
+            else if (card.rank == Rank.Ace || card.rank == Rank.King)
+            {
+                estimatedBid++;
+            }
+        }
+
+        if (estimatedBid < 1)
+        {
+            estimatedBid = 1;
+        }
+
+        SetBid(estimatedBid);
+    }
+
     public void UpdateScoreUI()
     {
         bidText.text = bid.ToString();//Update UI bid value with Players selected Bid amount
     }
 
-    public void SetPlayerBid(int amount)
+    public void SetBid(int amount)
     {
         this.bid = amount; //Storing Players bid amount to Bid Variable
         UpdateScoreUI();
