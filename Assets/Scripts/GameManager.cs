@@ -110,7 +110,7 @@ public class GameManager : MonoBehaviour
 
         Player ai = cardManager.players[currentTurn];
         
-        List<Card> validCards = ai.hand;
+        List<Card> validCards = GetValidCards(ai);
         
         int randomIndex = Random.Range(0, validCards.Count);
         Debug.Log(randomIndex);
@@ -126,7 +126,23 @@ public class GameManager : MonoBehaviour
             return;
         }
         
-        PlayCardSequence(cardInfo, 0);
+        List<Card> validCards = GetValidCards(cardManager.players[0]);
+        bool isValid = false;
+
+        for (int i = 0; i < validCards.Count; i++)
+        {
+            if (validCards[i] == cardInfo)
+            {
+                isValid = true;
+                PlayCardSequence(cardInfo, 0);
+                break;
+            }
+        }
+        
+        if(isValid == false)
+        {
+            Debug.Log("Play Required Card Only");
+        }
     }
 
     public void PlayCardSequence(Card playedCard, int playerID)
@@ -165,5 +181,54 @@ public class GameManager : MonoBehaviour
 
             StartGamePhase();
         }
+    }
+
+    public List<Card> GetValidCards(Player player)
+    {
+        List<Card> validCards = new List<Card>();
+
+        //on the first play required card is not needed and play any card
+        if (cardsOnTable.Count == 0)
+        {
+            for (int i = 0; i < player.hand.Count; i++)
+            {
+                validCards.Add(player.hand[i]);
+            }
+            return validCards;
+        }
+
+        //getting the required suit after a card deal
+        Suit requiredSuit = cardsOnTable[0].suit;
+        
+        bool hasRequiredSuit = false;
+        for (int i = 0; i < player.hand.Count; i++)
+        {
+            if (player.hand[i].suit == requiredSuit)
+            {
+                hasRequiredSuit = true;
+                break;
+            }
+        }
+        //add required suit cards from hand to valid cards
+        if (hasRequiredSuit)
+        {
+            for (int i = 0; i < player.hand.Count; i++)
+            {
+                if (player.hand[i].suit == requiredSuit)
+                {
+                    validCards.Add(player.hand[i]);
+                }
+            }
+
+            return validCards;
+        }
+        
+        //if does not have required suit then play any card
+        for (int i = 0; i < player.hand.Count; i++)
+        {
+            validCards.Add(player.hand[i]);
+        }
+
+        return validCards;
     }
 }
