@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
 
     public UICard[] tableCards = new UICard[4];
 
+    private List<int> cardPlayers = new List<int>();
+
     public CardManager cardManager;
 
     public GameObject biddingUIPanel;
@@ -21,6 +23,7 @@ public class GameManager : MonoBehaviour
     {
         currentLead = 0;
         cardsOnTable.Clear();
+        cardPlayers.Clear();
         ClearTableUI();
         StartNewLead();
     }
@@ -155,6 +158,7 @@ public class GameManager : MonoBehaviour
         currentPlayer.UpdateHandUI();
 
         cardsOnTable.Add(playedCard);
+        cardPlayers.Add(playerID);
 
         if (tableCards != null && playerID < tableCards.Length)
         {
@@ -184,8 +188,55 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            StartCoroutine(NextRound());
+            CalculateTrickWinner();
+            
         }
+    }
+
+    public void CalculateTrickWinner()
+    {
+        Suit requiredSuit = cardsOnTable[0].suit;
+        Card firstPlayerCard = cardsOnTable[0];
+        int trickPlayerIndex = 0;
+
+        for (int i = 1; i < cardsOnTable.Count; i++)
+        {
+            Card PlayedCard = cardsOnTable[i];
+
+            //When A spade trumps another suit card
+            if (PlayedCard.suit == Suit.Spades && firstPlayerCard.suit != Suit.Spades)
+            {
+                trickPlayerIndex = i;
+            }
+            //when Both are spades, higher rank wins
+            else if(PlayedCard.suit == Suit.Spades && firstPlayerCard.suit == Suit.Spades)
+            {
+                if ((int)PlayedCard.rank > (int)firstPlayerCard.rank)
+                {
+                    trickPlayerIndex = i;
+                }
+            }
+            //when there's no spades, needed to match required suit and higher rank wins
+            else if(PlayedCard.suit == requiredSuit && firstPlayerCard.suit == requiredSuit)
+            {
+                if((int)PlayedCard.rank > (int)firstPlayerCard.rank)
+                {
+                    trickPlayerIndex = i;
+                }
+            }
+        }
+        //getting winner id from players
+        int winnerID = cardPlayers[trickPlayerIndex];
+
+        Debug.Log(winnerID);
+
+        cardManager.players[winnerID].roundsWon += 1;
+        cardManager.players[winnerID].UpdateScoreUI();
+
+        currentTurn = winnerID;
+
+        //Moving to next round
+        StartCoroutine(NextRound());
     }
 
     IEnumerator NextRound()
@@ -193,6 +244,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(2.0f);
         cardsOnTable.Clear();
         ClearTableUI();
+        cardPlayers.Clear();
 
         if (cardManager.players[0].hand.Count == 0)
         {

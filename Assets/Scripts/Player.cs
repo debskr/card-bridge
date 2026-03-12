@@ -89,6 +89,7 @@ public class Player : MonoBehaviour
     public void UpdateScoreUI()
     {
         bidText.text = bid.ToString();//Update UI bid value with Players selected Bid amount
+        roundWonText.text = roundsWon.ToString();//Update Who won the round score
     }
 
     public void SetBid(int amount)
