@@ -17,4 +17,14 @@ public class UICard : MonoBehaviour
             this.gameObject.GetComponent<Image>().sprite = myCardData.cardSprite;
         }
     }
+
+    public void OnCardClicked()
+    {
+        GameManager gm = FindAnyObjectByType<GameManager>();
+
+        if (gm != null)
+        {
+            gm.TryPlayCard(myCardData);
+        }
+    }
 }

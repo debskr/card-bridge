@@ -35,9 +35,13 @@ public class Player : MonoBehaviour
     {
         for (int i = 0; i < myUICards.Length; i++)
         {
-            if(i < hand.Count)
+            if (i < hand.Count)
             {
                 myUICards[i].SetupCardData(hand[i]);//Setting from card list data to single cards
+            }
+            else
+            {
+                myUICards[i].gameObject.SetActive(false);
             }
             
         }
