@@ -102,6 +102,7 @@ public class GameManager : MonoBehaviour
             Debug.Log("AI " + currentTurn + " is Playing");
             StartCoroutine(AITurnRoutine());
         }
+
     }
 
     IEnumerator AITurnRoutine()
@@ -113,7 +114,7 @@ public class GameManager : MonoBehaviour
         List<Card> validCards = GetValidCards(ai);
         
         int randomIndex = Random.Range(0, validCards.Count);
-        Debug.Log(randomIndex);
+
         Card choosenCard = validCards[randomIndex];
 
         PlayCardSequence(choosenCard, currentTurn);
@@ -166,7 +167,7 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Player " + playerID + " played " + playedCard.rank + " of " + playedCard.suit);
 
-        DetermineNextTurn();
+        DetermineNextTurn();  
     }
 
     public void DetermineNextTurn()
@@ -181,6 +182,26 @@ public class GameManager : MonoBehaviour
 
             StartGamePhase();
         }
+        else
+        {
+            StartCoroutine(NextRound());
+        }
+    }
+
+    IEnumerator NextRound()
+    {
+        yield return new WaitForSeconds(2.0f);
+        cardsOnTable.Clear();
+        ClearTableUI();
+
+        if (cardManager.players[0].hand.Count == 0)
+        {
+            //Round over
+        }
+        else
+        {
+            StartGamePhase();
+        } 
     }
 
     public List<Card> GetValidCards(Player player)
@@ -222,7 +243,56 @@ public class GameManager : MonoBehaviour
 
             return validCards;
         }
+
+        //Getting Highest trump card on table
+        bool isTrump = false;
+        int highestSpadeOnTable = 0;
+
+        for (int i = 0; i < cardsOnTable.Count; i++)
+        {
+            if (cardsOnTable[i].suit == Suit.Spades)
+            {
+                isTrump = true;
+                if ((int)cardsOnTable[i].rank > highestSpadeOnTable)
+                {
+                    highestSpadeOnTable = (int)cardsOnTable[i].rank;
+                }
+            }
+        }
         
+        //Check if player has spade on hand
+        bool hasSpade = false;
+        for (int i = 0; i < player.hand.Count; i++)
+        {
+            if (player.hand[i].suit == Suit.Spades)
+            {
+                hasSpade = true;
+                break;
+            }
+        }
+
+        //check if the player spade is higher than the spade on table
+        if (hasSpade)
+        {
+
+            for (int i = 0; i < player.hand.Count; i++)
+            {
+                if (player.hand[i].suit == Suit.Spades)
+                {
+                    if (isTrump && (int)player.hand[i].rank > highestSpadeOnTable)
+                    {
+                        validCards.Add(player.hand[i]);
+                    }
+                    else
+                    {
+                        validCards.Add(player.hand[i]);
+                    }
+                }
+            }
+            return validCards;
+
+        }
+
         //if does not have required suit then play any card
         for (int i = 0; i < player.hand.Count; i++)
         {
