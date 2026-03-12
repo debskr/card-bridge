@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject biddingUIPanel;
     private int playerBidSelection;
+    public string status;
 
     void Start()
     {
@@ -98,6 +99,8 @@ public class GameManager : MonoBehaviour
     {
         if (currentTurn == 0)
         {
+            status = "Waiting for Player";
+            cardManager.players[0].UpdateStatus(status);
             Debug.Log("Waiting for Player");
         }
         else
@@ -145,6 +148,8 @@ public class GameManager : MonoBehaviour
         
         if(isValid == false)
         {
+            status = "Play Required Card Only";
+            cardManager.players[0].UpdateStatus(status);
             Debug.Log("Play Required Card Only");
         }
     }
@@ -169,8 +174,9 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        Debug.Log("Player " + playerID + " played " + playedCard.rank + " of " + playedCard.suit);
-
+        status = "Player " + playerID + " played " + playedCard.rank + " of " + playedCard.suit;
+        //Debug.Log("Player " + playerID + " played " + playedCard.rank + " of " + playedCard.suit);
+        cardManager.players[playerID].UpdateStatus(status);
         DetermineNextTurn();  
     }
 
@@ -249,11 +255,37 @@ public class GameManager : MonoBehaviour
         if (cardManager.players[0].hand.Count == 0)
         {
             //Round over
+            CalculateTotalScore();
         }
         else
         {
             StartGamePhase();
         } 
+    }
+
+    public void CalculateTotalScore()
+    {
+        for (int i = 0; i < cardManager.players.Length; i++)
+        {
+            Player player = cardManager.players[i];
+
+            int totalPoints = 0;
+
+            if (player.roundsWon < player.bid)
+            {
+                totalPoints -= player.bid;
+            }
+            else
+            {
+                totalPoints += player.bid;
+            }
+
+            player.totalScore += totalPoints;
+
+            player.UpdateScoreUI();
+
+            //Debug.Log(player.playerId + "Total Score: " + player.totalScore);
+        }
     }
 
     public List<Card> GetValidCards(Player player)

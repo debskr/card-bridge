@@ -13,6 +13,8 @@ public class Player : MonoBehaviour
     public TextMeshProUGUI roundWonText;
     public TextMeshProUGUI totalScoreText;
 
+    public TextMeshProUGUI StatusText;
+
     public int bid;
     public int roundsWon;
     public float totalScore;
@@ -47,6 +49,10 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void UpdateStatus(string status)
+    {
+        StatusText.text = status;
+    }
     //public void CalculateCards()
     //{
     //    for (int i = 0; i < hand.Count; i++)
@@ -90,6 +96,7 @@ public class Player : MonoBehaviour
     {
         bidText.text = bid.ToString();//Update UI bid value with Players selected Bid amount
         roundWonText.text = roundsWon.ToString();//Update Who won the round score
+        totalScoreText.text = "Total: "+totalScore.ToString();
     }
 
     public void SetBid(int amount)
