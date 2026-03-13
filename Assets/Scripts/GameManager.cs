@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour
 
     public CardManager cardManager;
 
+    public GameObject restartButton;
+
     public GameObject biddingUIPanel;
     private int playerBidSelection;
     public string status;
@@ -282,10 +284,47 @@ public class GameManager : MonoBehaviour
 
             player.totalScore += totalPoints;
 
-            player.UpdateScoreUI();
+            player.UpdateTotalScore();
 
             //Debug.Log(player.playerId + "Total Score: " + player.totalScore);
         }
+
+        StartCoroutine(EnableRestart());
+    }
+
+    IEnumerator EnableRestart()
+    {
+        yield return new WaitForSeconds(1f);
+
+        if(restartButton!=null)
+        {
+            restartButton.SetActive(true);
+        }
+        
+    }
+
+    public void RestartGame()
+    {
+        currentLead++;
+
+        cardsOnTable.Clear();
+        cardPlayers.Clear();
+        ClearTableUI();
+
+        for (int i = 0; i < cardManager.players.Length; i++)
+        {
+            
+            Player p = cardManager.players[i];
+            p.hand.Clear();
+            p.bid = 0;
+            p.roundsWon = 0;
+            p.UpdateScoreUI();
+            p.ClearHandUI();
+        }
+
+        StartNewLead();
+
+        restartButton.SetActive(false);
     }
 
     public List<Card> GetValidCards(Player player)

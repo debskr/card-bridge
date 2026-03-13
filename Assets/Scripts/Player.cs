@@ -49,6 +49,14 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void ClearHandUI()
+    {
+        for (int i = 0; i < myUICards.Length; i++)
+        {
+            myUICards[i].gameObject.SetActive(true);
+        }
+    }
+
     public void UpdateStatus(string status)
     {
         StatusText.text = status;
@@ -96,7 +104,12 @@ public class Player : MonoBehaviour
     {
         bidText.text = bid.ToString();//Update UI bid value with Players selected Bid amount
         roundWonText.text = roundsWon.ToString();//Update Who won the round score
-        totalScoreText.text = "Total: "+totalScore.ToString();
+    }
+
+    public void UpdateTotalScore()
+    {
+        //finalScore = finalScore + totalScore;
+        totalScoreText.text = "Total: " + totalScore.ToString();
     }
 
     public void SetBid(int amount)
